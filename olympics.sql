@@ -1,8 +1,3 @@
-use athletes
-select * from athletes..athlete_events
-
-select * from athletes..noc_regions
-
 --1. how many olympic games have been
 
 select count(distinct games) from athlete_events
