@@ -1,4 +1,3 @@
-
 --1. how many olympic games have been
 
 select count(distinct games) as num_of_games
@@ -29,7 +28,7 @@ order by games
 with cte_participating as(
 	select games, 
 	       count(distinct region) as num_of_nations 
-    from noc_regions
+        from noc_regions
 	join athlete_events
 	on athlete_events.noc=noc_regions.noc
 	group by games
@@ -37,10 +36,10 @@ with cte_participating as(
 
 
 select concat((select top 1 games from cte_participating order by num_of_nations),
-       ' - ',
-	   (SELECT MIN(num_of_nations) FROM cte_participating)) as lowest_countries, 
-	    concat((select top 1 games from cte_participating order by num_of_nations desc),' - ',
-	   (SELECT max(num_of_nations) FROM cte_participating)) as highest_countries;
+              ' - ',
+	      (SELECT MIN(num_of_nations) FROM cte_participating)) as lowest_countries, 
+	      concat((select top 1 games from cte_participating order by num_of_nations desc),' - ',
+	      (SELECT max(num_of_nations) FROM cte_participating)) as highest_countries;
 
 
 --5. Which nation has participated in all of the olympic games
@@ -59,13 +58,13 @@ having count(distinct games)=(select count(distinct games)
 
 select distinct sport, 
        count(distinct Games) as num_of_games, 
-	   (select count(distinct games) 
-	       	   from athlete_events
-	           where Games like '%Summer%') as total_games from athlete_events
-		       where Games like '%Summer%'
-		       group by sport
-		       having count(distinct Games)=(select count(distinct games) from athletes..athlete_events
-		       where Games like '%Summer%')
+       (select count(distinct games) 
+              from athlete_events
+	where Games like '%Summer%') as total_games from athlete_events
+        where Games like '%Summer%'
+        group by sport
+	having count(distinct Games)=(select count(distinct games) from athletes..athlete_events
+	where Games like '%Summer%')
 
 
 --7. Which Sports were just played only once in the olympics.
@@ -155,10 +154,10 @@ ORDER BY total DESC
 
 select games, 
        region,
-	   sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
+       sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
        SUM(CASE WHEN medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
        SUM(CASE WHEN medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze,
-	   SUM(CASE WHEN medal = 'Gold' OR medal = 'Silver' OR medal = 'Bronze' THEN 1 ELSE 0 END) AS total
+       SUM(CASE WHEN medal = 'Gold' OR medal = 'Silver' OR medal = 'Bronze' THEN 1 ELSE 0 END) AS total
 from noc_regions
 join athlete_events
 on noc_regions.noc=athlete_events.noc
@@ -172,8 +171,8 @@ order by games, region
  
  WITH cte_gold AS (
 		SELECT games, 
-			   region, 
-			   SUM(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold
+		       region, 
+		       SUM(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold
 		FROM noc_regions
 		JOIN athlete_events ON noc_regions.noc = athlete_events.noc
 		GROUP BY games, region
@@ -181,8 +180,8 @@ order by games, region
   
   cte_silver AS (
     SELECT games, 
-	       region, 
-	       SUM(CASE WHEN medal = 'Silver' THEN 1 ELSE 0 END) AS silver
+	   region, 
+	   SUM(CASE WHEN medal = 'Silver' THEN 1 ELSE 0 END) AS silver
     FROM noc_regions
     JOIN athlete_events ON noc_regions.noc = athlete_events.noc
     GROUP BY games, region
@@ -190,7 +189,8 @@ order by games, region
   
   cte_bronze AS (
     SELECT games, 
-	       region, SUM(CASE WHEN medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
+	   region, 
+	   SUM(CASE WHEN medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
     FROM noc_regions
     JOIN athlete_events ON noc_regions.noc = athlete_events.noc
     GROUP BY games, region
@@ -215,8 +215,8 @@ ORDER BY g.games;
 WITH 
   cte_gold AS (
     SELECT games, 
-	       region, 
-		   SUM(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold
+	   region, 
+	   SUM(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold
     FROM noc_regions
     JOIN athlete_events ON noc_regions.noc = athlete_events.noc
     GROUP BY games, region
@@ -224,8 +224,8 @@ WITH
   
   cte_silver AS (
     SELECT games, 
-	       region, 
-		   SUM(CASE WHEN medal = 'Silver' THEN 1 ELSE 0 END) AS silver
+	   region, 
+	   SUM(CASE WHEN medal = 'Silver' THEN 1 ELSE 0 END) AS silver
     FROM noc_regions
     JOIN athlete_events ON noc_regions.noc = athlete_events.noc
     GROUP BY games, region
@@ -233,8 +233,8 @@ WITH
   
   cte_bronze AS (
     SELECT games, 
-	       region, 
-		   SUM(CASE WHEN medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
+	   region, 
+	   SUM(CASE WHEN medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze
     FROM noc_regions
     JOIN athlete_events ON noc_regions.noc = athlete_events.noc
     GROUP BY games, region
@@ -242,8 +242,8 @@ WITH
 
     cte_total AS (
     SELECT games, 
-	       region, 
-		   SUM(CASE WHEN medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total
+	   region, 
+           SUM(CASE WHEN medal IN ('Gold', 'Silver', 'Bronze') THEN 1 ELSE 0 END) AS total
     FROM noc_regions
     JOIN athlete_events ON noc_regions.noc = athlete_events.noc
     GROUP BY games, region
@@ -269,22 +269,23 @@ ORDER BY g.games;
 --18. Which countries have never won gold medal but have won silver/bronze medals?
 
 select region as country, 
-      sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold, 
-	  sum(CASE WHEN medal = 'silver' THEN 1 ELSE 0 END) AS silver,
-	  sum(CASE WHEN medal = 'bronze' THEN 1 ELSE 0 END) AS bronze
+       sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold, 
+       sum(CASE WHEN medal = 'silver' THEN 1 ELSE 0 END) AS silver,
+       sum(CASE WHEN medal = 'bronze' THEN 1 ELSE 0 END) AS bronze
 from noc_regions
 join athlete_events
 on noc_regions.noc=athlete_events.noc
 group by region
-having sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END)=0 and (sum(CASE WHEN medal = 'silver' THEN 1 ELSE 0 END)>0
-or sum(CASE WHEN medal = 'bronze' THEN 1 ELSE 0 END)>0)
+having sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END)=0 and 
+(sum(CASE WHEN medal = 'silver' THEN 1 ELSE 0 END)>0 or 
+sum(CASE WHEN medal = 'bronze' THEN 1 ELSE 0 END)>0)
 
 
 --19. In which Sport/event, Georgia has won highest medals.
 
 select top 1 region, 
        sport, 
-	   SUM(CASE WHEN medal in ('Gold', 'Silver','Bronze') THEN 1 ELSE 0 END) AS total_medals
+       SUM(CASE WHEN medal in ('Gold', 'Silver','Bronze') THEN 1 ELSE 0 END) AS total_medals
 from noc_regions
 join athlete_events
 on noc_regions.noc=athlete_events.noc
@@ -297,8 +298,8 @@ order by total_medals desc
 
 select region, 
        sport, 
-	   games, 
-	   SUM(CASE WHEN medal = 'Gold' OR medal = 'Silver' OR medal = 'Bronze' THEN 1 ELSE 0 END) AS total_medals
+       games, 
+       SUM(CASE WHEN medal = 'Gold' OR medal = 'Silver' OR medal = 'Bronze' THEN 1 ELSE 0 END) AS total_medals
 from noc_regions
 join athlete_events
 on noc_regions.noc=athlete_events.noc
