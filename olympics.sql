@@ -139,10 +139,10 @@ order by number_of_medals desc
 --14. List down total gold, silver, bronze and total medals won by each country.
 
 select region,
-	   sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
+       sum(CASE WHEN medal = 'Gold' THEN 1 ELSE 0 END) AS gold,
        SUM(CASE WHEN medal = 'Silver' THEN 1 ELSE 0 END) AS silver,
        SUM(CASE WHEN medal = 'Bronze' THEN 1 ELSE 0 END) AS bronze,
-	   SUM(CASE WHEN medal = 'Gold' OR medal = 'Silver' OR medal = 'Bronze' THEN 1 ELSE 0 END) AS total
+       SUM(CASE WHEN medal = 'Gold' OR medal = 'Silver' OR medal = 'Bronze' THEN 1 ELSE 0 END) AS total
 from noc_regions
 join athlete_events
 on noc_regions.noc=athlete_events.noc
